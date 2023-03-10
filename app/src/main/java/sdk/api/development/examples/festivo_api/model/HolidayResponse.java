@@ -1,5 +1,6 @@
 package sdk.api.development.examples.festivo_api.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,6 +10,10 @@ public class HolidayResponse {
     private int status;
     private String requestId;
     private List<Holiday> holidays;
+
+    public HolidayResponse() {
+        holidays = new ArrayList<>();
+    }
 
     public int getStatus() {
         return status;

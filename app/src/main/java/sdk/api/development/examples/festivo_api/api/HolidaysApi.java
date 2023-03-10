@@ -10,6 +10,12 @@ import java.util.List;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sdk.api.development.examples.festivo_api.errors.AuthenticationError;
+import sdk.api.development.examples.festivo_api.errors.AuthorizationError;
+import sdk.api.development.examples.festivo_api.errors.FatalError;
+import sdk.api.development.examples.festivo_api.errors.PaymentRequiredError;
+import sdk.api.development.examples.festivo_api.errors.RateLimitError;
+import sdk.api.development.examples.festivo_api.errors.ValidationError;
 import sdk.api.development.examples.festivo_api.model.Country;
 import sdk.api.development.examples.festivo_api.model.HolidayResponse;
 
@@ -30,6 +36,24 @@ public class HolidaysApi {
             .GET()
             .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        switch (response.statusCode()) {
+            case 400:
+                throw new ValidationError();
+            case 401:
+                throw new AuthorizationError();
+            case 402:
+                throw new PaymentRequiredError();
+            case 403:
+                throw new AuthenticationError();
+            case 429:
+                throw new RateLimitError();
+            case 500:
+                throw new FatalError();
+            default:
+                break;
+        }
+        
         ObjectMapper mapper = new ObjectMapper();
         List<Country> countries = mapper.readValue(response.body(), new TypeReference<List<Country>>() {});
         return countries;
@@ -44,6 +68,24 @@ public class HolidaysApi {
             .GET()
             .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        switch (response.statusCode()) {
+            case 400:
+                throw new ValidationError();
+            case 401:
+                throw new AuthorizationError();
+            case 402:
+                throw new PaymentRequiredError();
+            case 403:
+                throw new AuthenticationError();
+            case 429:
+                throw new RateLimitError();
+            case 500:
+                throw new FatalError();
+            default:
+                break;
+        }
+        
         ObjectMapper mapper = new ObjectMapper();
         HolidayResponse holidayResponse = mapper.readValue(response.body(), new TypeReference<HolidayResponse>() {});
         return holidayResponse;
