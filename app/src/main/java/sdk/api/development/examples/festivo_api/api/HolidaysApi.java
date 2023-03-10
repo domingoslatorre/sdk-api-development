@@ -37,22 +37,7 @@ public class HolidaysApi {
             .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        switch (response.statusCode()) {
-            case 400:
-                throw new ValidationError();
-            case 401:
-                throw new AuthorizationError();
-            case 402:
-                throw new PaymentRequiredError();
-            case 403:
-                throw new AuthenticationError();
-            case 429:
-                throw new RateLimitError();
-            case 500:
-                throw new FatalError();
-            default:
-                break;
-        }
+        checkResponse(response.statusCode());
         
         ObjectMapper mapper = new ObjectMapper();
         List<Country> countries = mapper.readValue(response.body(), new TypeReference<List<Country>>() {});
@@ -69,7 +54,15 @@ public class HolidaysApi {
             .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        switch (response.statusCode()) {
+        checkResponse(response.statusCode());
+
+        ObjectMapper mapper = new ObjectMapper();
+        HolidayResponse holidayResponse = mapper.readValue(response.body(), new TypeReference<HolidayResponse>() {});
+        return holidayResponse;
+    }
+
+    private void checkResponse(int statusCode) {
+        switch (statusCode) {
             case 400:
                 throw new ValidationError();
             case 401:
@@ -85,9 +78,5 @@ public class HolidaysApi {
             default:
                 break;
         }
-        
-        ObjectMapper mapper = new ObjectMapper();
-        HolidayResponse holidayResponse = mapper.readValue(response.body(), new TypeReference<HolidayResponse>() {});
-        return holidayResponse;
     }
 }
